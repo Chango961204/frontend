@@ -9,11 +9,11 @@ function LoginPage() {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const { signin, isAuthenticated, errors: signInErrors } = useAuth();
   const [passwordShown, setPasswordShown] = useState(false);
-  const [captchaValue, setCaptchaValue] = useState(null)
+  const [captchaValue, setCaptchaValue] = useState(null);
 
   const togglePasswordVisibility = () => {
-    setPasswordShown(passwordShown => !passwordShown);
-  }
+    setPasswordShown((prev) => !prev);
+  };
 
   const navigate = useNavigate();
 
@@ -30,64 +30,78 @@ function LoginPage() {
   });
 
   return (
-    <div className="flex items-center justify-center h-screen">
-      <div className="bg-zinc-800 max-w-md w-full p-6 rounded-lg">
-        {
-          signInErrors.map((error, i) => (
-            <div className='bg-red-500 p-2 -my-2 text-white' key={i}>
-              {error}
-            </div>
-          ))
-        }
-        <form onSubmit={onSubmit}>
-          <h1 className='text-3xl font-bold my-3'>Login</h1>
-          <label htmlFor='email'>Email</label>
-          <div className='relative'>
+    <div className="flex items-center justify-center h-screen bg-gray-100">
+      <div className="bg-white max-w-md w-full p-6 rounded-lg shadow-md">
+        {signInErrors.map((error, i) => (
+          <div className="bg-red-500 p-2 -my-2 text-white" key={i}>
+            {error}
+          </div>
+        ))}
+        <form onSubmit={onSubmit} className="space-y-4">
+          <h1 className="text-black text-3xl font-bold my-3 text-center">Iniciar Sesión</h1>
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-600">
+              Email
+            </label>
             <input
-              type='email'
-              className={`w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2 ${errors.email ? 'border-b-2 border-red-500' : ''}`}
-              placeholder='Email'
+              type="email"
+              className={`w-full px-4 py-2 rounded-md border focus:outline-none focus:ring focus:border-blue-300 ${
+                errors.email ? 'border-red-500' : 'border-gray-300'
+              } text-black`} // Agrega la clase text-black
+              placeholder="Email"
               {...register('email', { required: true })}
             />
-            {errors.email && (
-              <p className='text-red-500'>Email requerido</p>
-            )}
+            {errors.email && <p className="text-red-500">Email requerido</p>}
           </div>
 
-          <label htmlFor='password'>Password</label>
-          <div className='flex justify-end items-center relative'>
-            <input
-              type={passwordShown ? "text" : "password"}
-              className='w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2'
-              placeholder='Password'
-              {...register('password', { required: true, minLength: 6 })}
-            />
-            {
-              passwordShown ? <IoEyeSharp size={30} className='absolute mr-2 w-10' onClick={togglePasswordVisibility} />
-                : <IoEyeOffSharp size={30} className='absolute mr-2 w-10' onClick={togglePasswordVisibility} />
-            }
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-600">
+              Contraseña
+            </label>
+            <div className="relative">
+              <input
+                type={passwordShown ? 'text' : 'password'}
+                className="w-full px-4 py-2 rounded-md border focus:outline-none focus:ring focus:border-blue-300 text-black" // Agrega la clase text-black
+                placeholder="Contraseña"
+                {...register('password', { required: true, minLength: 6 })}
+              />
+              {passwordShown ? (
+                <IoEyeSharp
+                  size={20}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                  onClick={togglePasswordVisibility}
+                />
+              ) : (
+                <IoEyeOffSharp
+                  size={20}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                  onClick={togglePasswordVisibility}
+                />
+              )}
+            </div>
             {errors.password?.type === 'required' && (
-              <div className='text-red-500'>Contraseña requerida</div>
+              <p className="text-red-500">Contraseña requerida</p>
             )}
             {errors.password?.type === 'minLength' && (
-              <div className='text-red-500'>Contraseña requerida mínimo 6 caracteres</div>
+              <p className="text-red-500">Contraseña requerida mínimo 6 caracteres</p>
             )}
           </div>
-          <button className='bg-zinc-700 px-3 py-3 my-3 rounded-md' type="submit"
+
+          <ReCaptcha sitekey="6Le41iUpAAAAABikfLZu1Sa_vyswImk8cZ_WJBC5" onChange={(value) => setCaptchaValue(value)} />
+
+          <button
+            className="w-full bg-blue-500 text-white px-4 py-3 rounded-md focus:outline-none hover:bg-blue-600"
+            type="submit"
             disabled={!captchaValue}
           >
-            <IoLogIn size={30} />
+            Iniciar Sesión <IoLogIn size={30} className="ml-1" />
           </button>
-          
-          <ReCaptcha
-            sitekey='6Le41iUpAAAAABikfLZu1Sa_vyswImk8cZ_WJBC5'
-            onChange={(value) => setCaptchaValue(value)}
-          />
-
         </form>
-        <p className='flex gap-x-2 justify-between pt-5 mt-5'>
-          ¿No tienes una cuenta?
-          <Link to='/register' className='text-sky-500'>¡Crea una! <IoPersonAdd size={30} className='mx-1' />
+
+        <p className="text-center text-sm mt-4 text to-blue-500">
+          ¿No tienes una cuenta?{''}
+          <Link to="/register" className="text-blue-500">
+            ¡Crea una! <IoPersonAdd size={20} className="ml-1" />
           </Link>
         </p>
       </div>
