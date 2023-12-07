@@ -21,9 +21,9 @@ function Navbar() {
         {isAuthenticated ? (
           <>
             <li>
-              <div className='flex items-center mx-3 px-3'>
+              <Link to='/profile' className='flex items-center mx-3 px-3'>
                 <IoPerson size={30} className='mr-2' /> {user.username}
-              </div>
+              </Link>
             </li>
             <li>
               <Menu as="div" className="relative inline-block text-left">
